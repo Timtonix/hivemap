@@ -2,14 +2,16 @@ import L from "leaflet";
 
 let Hooks = {};
 
-Hooks.FlowerMap = {
+Hooks.HiveMap = {
   mounted() {
     // 1. Initialiser la carte centrée sur la France par exemple
     this.map = L.map(this.el).setView([46.603354, 1.888334], 6);
 
     // 2. Charger les tuiles gratuites d'OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
     }).addTo(this.map);
 
     // 3. Écouter les événements envoyés par Elixir/LiveView
@@ -17,7 +19,7 @@ Hooks.FlowerMap = {
       spots.forEach(spot => {
         L.marker([spot.lat, spot.lng])
          .addTo(this.map)
-         .bindPopup(`<b>${spot.flower_name}</b><br>${spot.description}`);
+         .bindPopup(`<b>${spot.name}</b><br>${spot.description}`);
       });
     });
 

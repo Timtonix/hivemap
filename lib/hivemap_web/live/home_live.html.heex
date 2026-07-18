@@ -1,15 +1,125 @@
 <Layouts.app flash={@flash}>
-  <div class="space-y-4">
-    <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Hivemap</h1>
-      <span class="badge badge-primary">Carte de base</span>
+  <div class="space-y-6">
+    <!-- En-tête -->
+    <div class="flex justify-between items-center border-b border-base-200 pb-4">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Hivemap</h1>
+        <p class="text-sm text-base-content/60 mt-1">
+          Explorez et gérez vos localisations de spots.
+        </p>
+      </div>
+
+      <%= if @adding_spot? do %>
+        <button
+          phx-click="cancel-adding-spot"
+          class="btn btn-error btn-sm shadow-sm transition-all hover:scale-105"
+        >
+          <.icon name="hero-x-mark" class="size-4 mr-1" /> Annuler
+        </button>
+      <% else %>
+        <button
+          phx-click="start-adding-spot"
+          class="btn btn-primary btn-sm shadow-sm transition-all hover:scale-105"
+        >
+          <.icon name="hero-plus" class="size-4 mr-1" /> Ajouter un spot
+        </button>
+      <% end %>
     </div>
-    <div
-      id="map-container"
-      phx-update="ignore"
-      phx-hook="FlowerMap"
-      class="h-[600px] w-full rounded-box border border-base-300 shadow-md"
-    >
+    
+<!-- Layout en grille (Carte à gauche, Panneau à droite) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <!-- Section de la Carte -->
+      <div class="lg:col-span-2 relative rounded-box overflow-hidden border border-base-300 shadow-lg bg-base-100">
+        <div
+          id="map-container"
+          phx-update="ignore"
+          phx-hook="HiveMap"
+          class="h-[600px] w-full"
+        >
+        </div>
+      </div>
+      
+<!-- Section du Panneau de Contrôle -->
+      <div class="lg:col-span-1 space-y-4">
+        <%= cond do %>
+          <% @temp_coords -> %>
+            <!-- Formulaire pour enregistrer le spot -->
+            <div class="card bg-base-100 border border-base-300 shadow-md p-5 space-y-4 animate-in fade-in duration-200">
+              <div class="flex items-center gap-2 text-primary">
+                <.icon name="hero-map-pin" class="size-5" />
+                <h2 class="text-lg font-bold">Nouveau Spot</h2>
+              </div>
+              <p class="text-xs text-base-content/60 leading-relaxed">
+                Coordonnées sélectionnées :<br />
+                <code class="bg-base-200 px-2 py-1 rounded font-mono text-[11px] block mt-1">
+                  {@temp_coords.lat |> Float.round(6)}, {@temp_coords.lng |> Float.round(6)}
+                </code>
+              </p>
+
+              <.form for={@form} phx-submit="save-spot" class="space-y-4">
+                <.input
+                  field={@form[:name]}
+                  label="Nom du spot"
+                  placeholder="Ex: Rucher Sud"
+                  required
+                />
+                <.input
+                  field={@form[:description]}
+                  label="Description"
+                  type="textarea"
+                  placeholder="Détails sur ce spot..."
+                  required
+                />
+
+                <div class="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    phx-click="cancel-adding-spot"
+                    class="btn btn-ghost btn-sm"
+                  >
+                    Annuler
+                  </button>
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    Enregistrer
+                  </button>
+                </div>
+              </.form>
+            </div>
+          <% @adding_spot? -> %>
+            <!-- Instructions pour le clic sur la carte -->
+            <div class="card bg-info/10 border border-info/20 text-info-content shadow-sm p-5 space-y-3 animate-pulse">
+              <div class="flex items-center gap-2 text-info">
+                <.icon name="hero-cursor-arrow-rays" class="size-6 animate-bounce" />
+                <h2 class="text-md font-bold">Sélection en cours</h2>
+              </div>
+              <p class="text-sm leading-relaxed text-base-content/80">
+                Cliquez à l'endroit désiré sur la carte pour définir les coordonnées de votre nouveau spot.
+              </p>
+            </div>
+          <% true -> %>
+            <!-- Vue par défaut / Présentation générale -->
+            <div class="card bg-base-100 border border-base-300 shadow-md p-5 space-y-4">
+              <div class="flex items-center gap-2 text-primary">
+                <.icon name="hero-information-circle" class="size-5" />
+                <h2 class="text-lg font-bold">Informations</h2>
+              </div>
+              <p class="text-sm text-base-content/75 leading-relaxed">
+                Cliquez sur <strong>"Ajouter un spot"</strong>
+                puis sélectionnez un point sur la carte pour enregistrer un nouvel emplacement.
+              </p>
+              <div class="bg-base-200/50 rounded-box p-3 text-xs text-base-content/60 space-y-2">
+                <div class="flex items-center gap-2">
+                  <span class="size-2 rounded-full bg-success"></span>
+                  <span>Système opérationnel</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <.icon name="hero-bolt" class="size-3" />
+                  <span>Synchronisation en temps réel</span>
+                </div>
+              </div>
+            </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </Layouts.app>
