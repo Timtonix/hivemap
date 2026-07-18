@@ -1,9 +1,14 @@
 defmodule HivemapWeb.HomeLive do
   use HivemapWeb, :live_view
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     socket =
       socket
+      # Live de connexion utilisateur
+      # |> HivemapWeb.UserAuth.mount_current(session)
+      |> assign(:show_login_modal?, false)
+      |> assign(:login_form, to_form(%{"email" => "", "password" => "", "remember_me" => "false"}))
+      # Interface de carte
       |> assign(:adding_spot?, false)
       |> assign(:temp_coords, nil)
       |> assign(:form, to_form(%{"name" => "", "description" => ""}))

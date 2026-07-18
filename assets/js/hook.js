@@ -5,7 +5,10 @@ let Hooks = {};
 Hooks.HiveMap = {
   mounted() {
     // 1. Initialiser la carte centrée sur la France par exemple
-    this.map = L.map(this.el).setView([46.603354, 1.888334], 6);
+    this.map = L.map(this.el, { zoomControl: false }).setView([46.603354, 1.888334], 6);
+
+    // Ajouter le contrôle de zoom en bas à gauche
+    L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
     // 2. Charger les tuiles gratuites d'OpenStreetMap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {

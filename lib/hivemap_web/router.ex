@@ -17,10 +17,12 @@ defmodule HivemapWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", HivemapWeb do
-    pipe_through :browser
+  live_session :default, on_mount: [{HivemapWeb.UserAuth, :mount_current_scope}] do
+    scope "/", HivemapWeb do
+      pipe_through :browser
 
-    live "/", HomeLive, :index
+      live "/", HomeLive, :index
+    end
   end
 
   # Other scopes may use custom stacks.

@@ -35,7 +35,7 @@ defmodule HivemapWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar fixed top-0 left-0 right-0 z-30 px-4 sm:px-6 lg:px-8 border-b border-base-200 bg-base-100/80 backdrop-blur-md">
       <div class="flex-1">
         <a href="/" class="flex-1 flex w-fit items-center gap-2">
           <img src={~p"/images/logo.svg"} width="36" />
@@ -45,19 +45,34 @@ defmodule HivemapWeb.Layouts do
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
             <.theme_toggle />
           </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
+          <%= if @current_scope && @current_scope.user do %>
+            <li class="text-xs text-base-content/80 font-medium">
+              {@current_scope.user.email}
+            </li>
+            <li>
+              <.link href={~p"/users/settings"} class="btn btn-ghost btn-sm">
+                Paramètres
+              </.link>
+            </li>
+            <li>
+              <.link href={~p"/users/log-out"} method="delete" class="btn btn-primary btn-sm">
+                Déconnexion
+              </.link>
+            </li>
+          <% else %>
+            <li>
+              <.link href={~p"/users/log-in"} class="btn btn-ghost btn-sm">
+                Connexion
+              </.link>
+            </li>
+            <li>
+              <.link href={~p"/users/register"} class="btn btn-primary btn-sm">
+                Inscription
+              </.link>
+            </li>
+          <% end %>
         </ul>
       </div>
     </header>

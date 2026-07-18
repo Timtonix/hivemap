@@ -75,6 +75,18 @@ defmodule HivemapWeb.UserAuth do
     end
   end
 
+  def on_mount(:mount_current_scope, _params, session, socket) do
+    user =
+      with token when is_binary(token) <- session["user_token"],
+           {user, _token_inserted_at} <- Accounts.get_user_by_session_token(token) do
+        user
+      else
+        _ -> nil
+      end
+
+    {:cont, Phoenix.Component.assign(socket, :current_scope, Scope.for_user(user))}
+  end
+
   defp ensure_user_token(conn) do
     if token = get_session(conn, :user_token) do
       {token, conn}
