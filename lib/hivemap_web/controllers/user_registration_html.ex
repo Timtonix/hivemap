@@ -1,0 +1,5 @@
+defmodule HivemapWeb.UserRegistrationHTML do
+  use HivemapWeb, :html
+
+  embed_templates "user_registration_html/*"
+end

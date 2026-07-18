@@ -200,3 +200,5 @@
     </div>
   </div>
 </div>
+<!-- IMPORTANT : Ajoute phx-update="ignore" pour éviter que LiveView ne détruise la carte lors d'une mise à jour HTML -->
+<div id="map-container" phx-update="ignore" phx-hook="FlowerMap" class="h-[500px] w-full"></div>

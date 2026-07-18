@@ -1,0 +1,15 @@
+<Layouts.app flash={@flash}>
+  <div class="space-y-4">
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Hivemap</h1>
+      <span class="badge badge-primary">Carte de base</span>
+    </div>
+    <div
+      id="map-container"
+      phx-update="ignore"
+      phx-hook="FlowerMap"
+      class="h-[600px] w-full rounded-box border border-base-300 shadow-md"
+    >
+    </div>
+  </div>
+</Layouts.app>
