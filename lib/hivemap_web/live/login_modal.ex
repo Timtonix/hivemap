@@ -11,20 +11,34 @@ defmodule HivemapWeb.LoginModal do
   def render(assigns) do
     ~H"""
     <div>
-      <.form for={@form} id="login-modal" phx-submit="submitted" phx-target={@myself}>
-        <.input
-          field={@form[:email]}
-          type="email"
-          label="Email"
-          autocomplete="username"
-          spellcheck="false"
-          required
-          phx-mounted={JS.focus()}
-        />
-        <.button>
-          Se connecter avec un mail
-        </.button>
-      </.form>
+      <.modal id="login-modal-overlay" show={true} on_close={JS.push("login-click")}>
+        <h3 class="text-lg font-bold tracking-tight pr-6">Connexion</h3>
+        <p class="text-xs text-base-content/60 mb-4">
+          Un lien de connexion vous sera envoyé par mail.
+        </p>
+
+        <.form
+          for={@form}
+          id="login-form"
+          phx-submit="submitted"
+          phx-target={@myself}
+          class="space-y-4"
+        >
+          <.input
+            field={@form[:email]}
+            type="email"
+            label="Email"
+            placeholder="votre@email.com"
+            autocomplete="username"
+            spellcheck="false"
+            required
+            phx-mounted={JS.focus()}
+          />
+          <.button class="btn btn-primary w-full">
+            Se connecter avec un mail
+          </.button>
+        </.form>
+      </.modal>
     </div>
     """
   end
