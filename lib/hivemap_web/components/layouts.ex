@@ -63,9 +63,9 @@ defmodule HivemapWeb.Layouts do
             </li>
           <% else %>
             <li>
-              <.link href={~p"/users/log-in"} class="btn btn-ghost btn-sm">
+              <button type="button" phx-click="login-click" class="btn btn-ghost btn-sm">
                 Connexion
-              </.link>
+              </button>
             </li>
             <li>
               <.link href={~p"/users/register"} class="btn btn-primary btn-sm">

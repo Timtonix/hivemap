@@ -1,13 +1,10 @@
 defmodule HivemapWeb.HomeLive do
   use HivemapWeb, :live_view
 
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     socket =
       socket
-      # Live de connexion utilisateur
-      # |> HivemapWeb.UserAuth.mount_current(session)
       |> assign(:show_login_modal?, false)
-      |> assign(:login_form, to_form(%{"email" => "", "password" => "", "remember_me" => "false"}))
       # Interface de carte
       |> assign(:adding_spot?, false)
       |> assign(:temp_coords, nil)
@@ -53,5 +50,16 @@ defmodule HivemapWeb.HomeLive do
      |> assign(:adding_spot?, false)
      |> assign(:temp_coords, nil)
      |> put_flash(:info, "Localisation ajoutée avec succès !")}
+  end
+
+  def handle_event("login-click", _unsigned_params, socket) do
+    {:noreply, update(socket, :show_login_modal?, &(!&1))}
+  end
+
+  def handle_info({:to_flash, message}, socket) do
+    {:noreply,
+     socket
+     |> assign(:show_login_modal?, false)
+     |> put_flash(:info, message)}
   end
 end

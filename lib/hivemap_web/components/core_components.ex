@@ -452,6 +452,68 @@ defmodule HivemapWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders a modal overlay with a centered panel.
+
+  ## Examples
+
+      <.modal id="confirm-modal" show={@show_modal?} on_close={JS.push("close-modal")}>
+        <h3>Êtes-vous sûr ?</h3>
+      </.modal>
+  """
+  attr :id, :string, required: true
+  attr :show, :boolean, default: false
+  attr :on_close, JS, default: %JS{}
+  slot :inner_block, required: true
+
+  def modal(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      phx-mounted={@show && show_modal(@id)}
+      phx-remove={hide_modal(@id)}
+      class={["relative z-50", !@show && "hidden"]}
+    >
+      <%!-- Fond semi-transparent (backdrop) --%>
+      <div
+        id={"#{@id}-bg"}
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        aria-hidden="true"
+      />
+
+      <%!-- Panneau centré --%>
+      <div
+        class="fixed inset-0 overflow-y-auto"
+        aria-modal="true"
+        role="dialog"
+        tabindex="0"
+        phx-key="escape"
+        phx-window-keydown={@on_close}
+        phx-click-away={@on_close}
+      >
+        <div class="flex min-h-full items-center justify-center p-4">
+          <div
+            id={"#{@id}-container"}
+            class="relative w-full max-w-md card bg-base-100 border border-base-300 shadow-2xl p-6 space-y-4"
+          >
+            <%!-- Bouton de fermeture --%>
+            <button
+              type="button"
+              class="absolute top-4 right-4 btn btn-ghost btn-sm btn-circle"
+              aria-label="Fermer"
+              phx-click={@on_close}
+            >
+              <.icon name="hero-x-mark" class="size-5" />
+            </button>
+
+            {render_slot(@inner_block)}
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
@@ -473,6 +535,35 @@ defmodule HivemapWeb.CoreComponents do
         {"transition-all ease-in duration-200", "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
+  end
+
+  defp show_modal(id) when is_binary(id) do
+    %JS{}
+    |> JS.show(to: "##{id}")
+    |> JS.show(
+      to: "##{id}-bg",
+      transition: {"transition-opacity ease-out duration-300", "opacity-0", "opacity-100"}
+    )
+    |> JS.show(
+      to: "##{id}-container",
+      transition:
+        {"transition-all ease-out duration-300", "opacity-0 scale-95", "opacity-100 scale-100"}
+    )
+    |> JS.focus_first(to: "##{id}-container")
+  end
+
+  defp hide_modal(id) when is_binary(id) do
+    %JS{}
+    |> JS.hide(
+      to: "##{id}-bg",
+      transition: {"transition-opacity ease-in duration-200", "opacity-100", "opacity-0"}
+    )
+    |> JS.hide(
+      to: "##{id}-container",
+      transition:
+        {"transition-all ease-in duration-200", "opacity-100 scale-100", "opacity-0 scale-95"}
+    )
+    |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
   end
 
   @doc """

@@ -17,6 +17,13 @@
       </div>
     </div>
   <% end %>
+
+  <%!--  Modale de connexion --%>
+  <.modal :if={@show_login_modal?} id="login-modal" show={true} on_close={JS.push("login-click")}>
+    <h3 class="text-lg font-bold tracking-tight pr-6">Connexion</h3>
+    <p class="text-xs text-base-content/60">Un lien de connexion vous sera envoyé par mail.</p>
+    <.live_component module={HivemapWeb.LoginModal} id="login-form" />
+  </.modal>
   
 <!-- 3. Panneau de contrôle flottant à gauche -->
   <div class="fixed top-24 left-4 lg:left-8 z-10 w-80 sm:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto card bg-base-100/95 backdrop-blur-sm border border-base-300 shadow-2xl p-5 space-y-4">
